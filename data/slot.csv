@@ -1,0 +1,59 @@
+id,name,slot,price,remain,capacity
+1,Bánh chocopie,DA008,6000,3,6
+2,Bánh trứng Custas ,DA010,6000,5,6
+3,Bánh trứng Custas ,DA010,6000,4,6
+4,Bánh chocopie,DA008,6000,4,6
+5,Bánh chocopie,DA008,6000,0,10
+6,Bánh trứng sữa mềm Belgi,B0060,7000,0,6
+7,Bánh trứng sữa mềm Belgi,B0060,7000,2,6
+8,Bánh trứng Custas ,DA010,6000,2,5
+9,Bánh chocopie,DA008,6000,0,6
+10,Bánh Donut Doowee,B0070,6000,0,5
+11,Snack chay vị heo quay,B00101,8000,5,5
+11,Bánh Donut Doowee,B0070,6000,5,5
+12,Bánh Donut Doowee vị cam ,B0093,6000,5,5
+13,Snack chay vị heo quay,B00101,8000,0,5
+15,Sữa đậu nành Fami canxi,SD0012,7000,0,5
+16,Sữa đậu nành vị đậu đỏ,SD0016,8000,3,5
+17,Snack Phomai ,B0076,8000,0,5
+19,Snack tôm cay đặc biệt ,B0078,9000,0,5
+21,Aquarius không calo,N032,15000,0,5
+22,Aquarius không calo,N032,15000,4,5
+23,Cà phê sữa đá Highlands Coffee 235ml,N022,17000,5,5
+24,TH trà xanh,N00033,15000,2,5
+25,Kẹo cao su Doublemint ,B047,7000,5,5
+26,Kẹo cao su Cool Air,B0057,7000,6,10
+27,Kẹo cao su Doublemint ,B047,7000,5,6
+28,Kẹo cao su Cool Air,B0057,7000,5,5
+29,Nutri Boost dâu sữa yến mạch 297ml,N021,15000,0,5
+30,Đậu phộng da cá Poca,B056,7000,0,5
+31,Aquarius không calo,N032,15000,0,5
+32,Aquarius không calo,N032,15000,0,6
+33,Sữa đậu nành vị đậu đỏ,SD0016,8000,5,5
+34,Sữa đậu nành vị đậu đỏ,SD0016,8000,3,5
+35,Goodmood vị sữa chua,N108,15000,3,5
+36,Trà xanh 0 độ,N00036,15000,4,5
+37,Aquarius không calo,N032,15000,0,5
+38,Trà Latter sữa 400ml,V006,15000,2,5
+39,Sữa đậu nành Fami canxi,SD0012,6000,4,5
+40,Cozy tắc mật ong ,B018,15000,3,5
+41,Nước 7Up revive bù nước 390ml,N030,15000,0,5
+42,Trà đen vị chanh Lipton 455ml,N00050,15000,1,5
+43,Nước lọc lavie 500ml,N001,10000,0,5
+44,Cozy trà đào sả,N0011,15000,4,5
+45,Cozy tắc mật ong ,B018,15000,3,5
+46,Sữa đậu nành Fami canxi,SD0012,7000,4,5
+47,Goodmood vị sữa chua,N108,15000,3,5
+48,Boncha Mật ong,N105,15000,2,5
+49,Hồng trà vị đào C2 500ml,N012,15000,1,5
+50,Cozy trà đào sả,N0011,15000,2,5
+51,Goodmood vị sữa chua,N108,15000,3,5
+52,Boncha Mật ong,N105,15000,1,5
+53,Milo 180ml sữa hộp,N018,11000,1,5
+54,Cozy tắc mật ong ,B018,15000,1,4
+55,Nước 7Up revive bù nước 390ml,N030,15000,0,5
+56,Sữa đậu nành vị đậu đỏ,SD0016,8000,2,5
+57,Trà bí đao,N0067,12000,4,4
+58,Milo 180ml sữa hộp,N018,11000,5,5
+59,Goodmood vị sữa chua,N108,15000,1,4
+60,Trà bí đao,N0067,12000,4,4
