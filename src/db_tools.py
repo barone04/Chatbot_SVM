@@ -12,14 +12,20 @@ from langchain_community.tools.sql_database.tool import (
     QuerySQLCheckerTool,
     QuerySQLDataBaseTool,
 )
+from crewai.tools import BaseTool
 from langchain_community.utilities.sql_database import SQLDatabase
 from langchain_core.callbacks.base import BaseCallbackHandler
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.language_models import BaseLanguageModel
+from crewai import LLM
+import litellm
 from dotenv import load_dotenv, find_dotenv
+load_dotenv()
 load_dotenv(find_dotenv())
 
 #============ LOAD LLM ===================
-MODEL_NAME="gemini-2.5-flash"
+MODEL_NAME="gemini/gemini-2.0-flash"
+litellm.api_key = os.getenv("GOOGLE_API_KEY")
 GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY")
 
 @dataclass
@@ -54,18 +60,24 @@ class LLMCallbackHandler(BaseCallbackHandler):
             file.write(json.dumps(asdict(event)) + "\n")
 
 
+def load_llm():
+    llm = LLM(
+        model=MODEL_NAME,
+        temperature=0.1
+    )
+    return llm
 
-def load_llm(model_name):
+def load_llm_tools(model_name):
     if GOOGLE_API_KEY is None:
         raise ValueError("GOOGLE_API_KEY haven't already created in environment.")
 
-    llm = ChatGoogleGenerativeAI(
+    llm_tools = ChatGoogleGenerativeAI(
         model=model_name,
         google_api_key=GOOGLE_API_KEY,
         temperature=0.5,
         callbacks=[LLMCallbackHandler(Path("prompts.jsonl"))],
     )
-    return llm
+    return llm_tools
 
 
 # Tải database
@@ -74,65 +86,88 @@ db_uri = f"sqlite:///{db_path}"
 db = SQLDatabase.from_uri(db_uri)
 print("Kết nối database thành công!")
 
-@tool("list_tables")
-def list_tables() -> str:
-    """Danh sách các bảng có trong datasets"""
-    return ListSQLDatabaseTool(db=db).invoke("")
 
-@tool("tables_schema")
-def tables_schema(tables: str) -> str:
-    """
-    Đầu vào là danh sách các bảng được phân tách bằng dấu phẩy, đầu ra là lược đồ và các hàng mẫu
-    cho các bảng đó. Hãy đảm bảo rằng các bảng thực sự tồn tại bằng cách gọi `list_tables` trước!
-    Ví dụ: Đầu vào: table1, table2, table3
-    """
-    tool1 = InfoSQLDatabaseTool(db=db)
-    return tool1.invoke(tables)
+class ListTablesTool(BaseTool):
+    name: str = "list_tables"
+    description: str = "Danh sách các bảng có trong datasets"
 
-@tool("execute_sql")
-def execute_sql(sql_query: str) -> str:
-    """Thực hiện truy vấn SQL trên cơ sở dữ liệu. Trả về kết quả"""
-    return QuerySQLDataBaseTool(db=db).invoke(sql_query)
+    def _run(self) -> str:
+        return ListSQLDatabaseTool(db=db).invoke("")
 
-@tool("check_sql")
-def check_sql(sql_query: str) -> str:
-    """
-    Use this tool to double check if your query is correct before executing it. Always use this
-    tool before executing a query with `execute_sql`.
-    """
-    llm = load_llm(MODEL_NAME)
-    return QuerySQLCheckerTool(db=db, llm=llm).invoke({"query": sql_query})
-print(check_sql.run("select* WHErE price > 10000 LimIT 5 table = slot"))
+class TablesSchemaTool(BaseTool):
+    name: str = "tables_schema"
+    description: str = (
+        "Đầu vào là danh sách các bảng được phân tách bằng dấu phẩy, đầu ra là lược đồ và các hàng mẫu "
+        "cho các bảng đó. Hãy đảm bảo rằng các bảng thực sự tồn tại bằng cách gọi `list_tables` trước!"
+    )
 
-# from langchain_core.tools import Tool  # hoặc từ langchain.tools nếu bạn đang dùng phiên bản cũ hơn
+    def _run(self, tables: str) -> str:
+        return InfoSQLDatabaseTool(db=db).invoke(tables)
+
+class ExecuteSQLTool(BaseTool):
+    name: str = "execute_sql"
+    description: str = "Thực hiện truy vấn SQL trên cơ sở dữ liệu. Trả về kết quả"
+
+    def _run(self, sql_query: str) -> str:
+        return QuerySQLDataBaseTool(db=db).invoke(sql_query)
+
+class CheckSQLTool(BaseTool):
+    name: str = "check_sql"
+    description: str = (
+        "Sử dụng công cụ này để kiểm tra xem truy vấn của bạn có chính xác hay không trước khi thực thi. "
+        "Luôn sử dụng công cụ này trước khi thực thi truy vấn với `execute_sql`."
+    )
+
+    def _run(self, sql_query: str) -> str:
+        llm = load_llm_tools("gemini-2.0-flash")
+        return QuerySQLCheckerTool(db=db, llm=llm).invoke({"query": sql_query})
+
+
+# list_tool = ListTablesTool()
+# print(list_tool.run())
 #
-# list_tables_tool = Tool.from_function(
-#     name="list_tables",
-#     description="Danh sách các bảng có trong datasets",
-#     func=lambda: ListSQLDatabaseTool(db=db).invoke("")
-# )
+# schema_tool = TablesSchemaTool()
+# print(schema_tool.run("orders, customers"))
 #
-# tables_schema_tool = Tool.from_function(
-#     name="tables_schema",
-#     description="""
+# exec_tool = ExecuteSQLTool()
+# print(exec_tool.run("SELECT * FROM slot WHErE price > 10000 LIMIT 5"))
+#
+# check_tool = CheckSQLTool()
+# print(check_tool.run("SELECT * FROM slot WhERE price > 10000 LIMIT 5"))
+
+
+
+
+
+# @tool("list_tables")
+# def list_tables() -> str:
+#     """Danh sách các bảng có trong datasets"""
+#     return ListSQLDatabaseTool(db=db).invoke("")
+#
+# @tool("tables_schema")
+# def tables_schema(tables: str) -> str:
+#     """
 #     Đầu vào là danh sách các bảng được phân tách bằng dấu phẩy, đầu ra là lược đồ và các hàng mẫu
 #     cho các bảng đó. Hãy đảm bảo rằng các bảng thực sự tồn tại bằng cách gọi `list_tables` trước!
-#     Ví dụ: table1, table2, table3
-#     """,
-#     func=lambda tables: InfoSQLDatabaseTool(db=db).invoke(tables)
-# )
+#     Ví dụ: Đầu vào: table1, table2, table3
+#     """
+#     tool1 = InfoSQLDatabaseTool(db=db)
+#     return tool1.invoke(tables)
 #
-# execute_sql_tool = Tool.from_function(
-#     name="execute_sql",
-#     description="Thực hiện truy vấn SQL trên cơ sở dữ liệu. Trả về kết quả",
-#     func=lambda sql_query: QuerySQLDataBaseTool(db=db).invoke(sql_query)
-# )
+# @tool("execute_sql")
+# def execute_sql(sql_query: str) -> str:
+#     """Thực hiện truy vấn SQL trên cơ sở dữ liệu. Trả về kết quả"""
+#     return QuerySQLDataBaseTool(db=db).invoke(sql_query)
 #
-# check_sql_tool = Tool.from_function(
-#     name="check_sql",
-#     description="""
-#     Use this tool to double check if your query is correct before executing it. Always use this
-#     tool before executing a query with `execute_sql`.
-#     """,
-#     func=lambda sql_query: QuerySQLCheckerTool(db=db, llm=load_llm(MODEL_NAME)).invoke({"query": sql_query})
-# )
+# @tool("check_sql")
+# def check_sql(sql_query: str) -> str:
+#     """
+#     Sử dụng công cụ này để kiểm tra xem truy vấn của bạn có chính xác hay không trước khi thực thi.
+#     Luôn sử dụng công cụ này trước khi thực thi truy vấn với `execute_sql`.
+#     """
+#     llm = load_llm_tools("gemini-2.0-flash")
+#     return QuerySQLCheckerTool(db=db, llm=llm).invoke({"query": sql_query})
+# print(check_sql.run("select* WHErE price > 10000 LimIT 5 table = slot"))
+
+
+

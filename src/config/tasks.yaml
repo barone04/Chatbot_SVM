@@ -1,22 +1,22 @@
 extract_data:
   description: >
-    Extract data that is required for the query: {query}
+    Trích xuất dữ liệu cần thiết cho truy vấn: {query}
   expected_output: >
-    Database result for the query.
+    Kết quả cơ sở dữ liệu cho truy vấn.
   agent: sql_dev
 
 analyze_data:
   description: >
-    Analyze the data from the database and write an analysis for: {query}
+    Phân tích dữ liệu từ cơ sở dữ liệu và viết phân tích cho: {query}
   expected_output: >
-    Detailed analysis text.
+    Văn bản phân tích chi tiết.
   agent: data_analyst
   context: [extract_data]
 
 write_report:
   description: >
-    Write an executive summary of the analysis in less than 100 words.
+    Viết bản tóm tắt phân tích trong vòng chưa đầy 100 từ.
   expected_output: >
-    Markdown report
+    Báo cáo giảm giá
   agent: report_writer
   context: [analyze_data]

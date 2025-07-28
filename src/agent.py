@@ -4,14 +4,22 @@ from crewai import Agent, Task, Crew, Process
 from db_tools import load_llm
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
+from db_tools import ListTablesTool, TablesSchemaTool, ExecuteSQLTool, CheckSQLTool
 import os
+import litellm
 from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
+load_dotenv()
+litellm.api_key = os.getenv("GOOGLE_API_KEY")
 
 #============ LOAD LLM ===================
-MODEL_NAME="gemini-2.5-flash"
+MODEL_NAME="gemini/gemini-2.0-flash"
 GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY")
 
+
+list_table = ListTablesTool()
+table_schema = TablesSchemaTool()
+execute_sql = ExecuteSQLTool()
+check_sql = CheckSQLTool()
 
 @CrewBase
 class SQLDeveloperCrew():
@@ -22,7 +30,7 @@ class SQLDeveloperCrew():
         with open("config/tasks.yaml", "r") as f:
             self.tasks_config = yaml.safe_load(f)
 
-        self.llm = load_llm(MODEL_NAME)
+        self.llm = load_llm()
 
 #============== AGENTS =====================
     @agent
@@ -33,7 +41,7 @@ class SQLDeveloperCrew():
             goal=cfg["goal"],
             backstory=cfg["backstory"],
             llm=self.llm,
-            tools=[SerperDevTool()],
+            tools=[list_table, table_schema, execute_sql, check_sql],
             allow_delegation=False,
         )
 
@@ -100,3 +108,16 @@ class SQLDeveloperCrew():
             verbose=True,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
+
+
+import sys
+
+print("Nhập câu hỏi:")
+query = sys.stdin.buffer.readline().decode("utf-8", errors="ignore").strip()
+
+
+inputs = {
+        'query': query,
+    }
+crew_instance = SQLDeveloperCrew()
+crew_instance.crew().kickoff(inputs=inputs)
