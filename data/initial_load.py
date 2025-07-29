@@ -3,9 +3,9 @@ import sqlite3
 import logging
 
 # --- Cấu hình ---
-BILL_CSV_PATH = "bill.csv"
-SLOT_CSV_PATH = "slot.csv"
-DB_PATH = "sales.db"
+BILL_CSV_PATH = "data/data/bill.csv"
+SLOT_CSV_PATH = "data/data/slot.csv"
+DB_PATH = "data/data/sales.db"
 BILLS_TABLE = "bill"
 SLOTS_TABLE = "slot"
 

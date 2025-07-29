@@ -63,7 +63,7 @@ def load_llm():
     llm = LLM(
         model=MODEL_NAME,
         temperature=0.1,
-        callbacks=[LLMCallbackHandler(Path("prompts.jsonl"))],
+        callbacks=[LLMCallbackHandler(Path("chat_log/prompts.jsonl"))],
     )
     return llm
 
@@ -77,13 +77,13 @@ def load_llm_tools(model_name):
         model=model_name,
         google_api_key=GOOGLE_API_KEY,
         temperature=0.1,
-        callbacks=[LLMCallbackHandler(Path("prompts.jsonl"))],
+        callbacks=[LLMCallbackHandler(Path("chat_log/prompts.jsonl"))],
     )
     return llm_tools
 
 
 # Tải database
-db_path = os.path.abspath("../data/sales.db")
+db_path = os.path.abspath("../data/data/sales.db")
 db_uri = f"sqlite:///{db_path}"
 db = SQLDatabase.from_uri(db_uri)
 print("Kết nối database thành công!")

@@ -46,7 +46,7 @@ def main():
             st.session_state.messages.append({"role": "assistant", "content": response})
 
             # 🧾 Ghi log nếu muốn
-            with open("crew.log.txt", "a", encoding="utf-8") as log:
+            with open("chat_log/crew.log.txt", "a", encoding="utf-8") as log:
                 log.write(f"[USER] {user_input}\n[ASSISTANT] {response}\n\n")
 
         except Exception as e:
