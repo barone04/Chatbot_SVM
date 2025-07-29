@@ -1,4 +1,4 @@
-# 🖼️ Logo
+# Hyperlogy
 
 ![Giao diện Chatbot](img/hyper.png)
 
@@ -15,7 +15,7 @@ Additionally, it supports internal tools to view table schemas, list available t
 
 ---
 
-## 📁 Cấu trúc thư mục
+## 📁 Project Structure
 
 ```
 Chatbot_SVM/
@@ -88,7 +88,7 @@ streamlit run agent.py
 
 ## 🧠 Các chức năng chính
 
-| Tính năng | Mô tả |
+| Feature | Description |
 |----------|-------|
 | 💬 Chatbot | Ask a questions and convert to SQL query to access in SQL database |
 | 🛠️ Tools | Includes `list_tables`, `tables_schema`, `execute_sql`, `check_sql` |
@@ -111,8 +111,8 @@ streamlit run agent.py
 
 - When using app, you can ask it like:
   ```
-  Cho tôi biết số lượng sản phẩm chocopie được bán ra vào tháng 5/2025?
-  Vẽ bảng thống kê phương thức thanh toán và thời gian bán ra.
+  - Cho tôi biết số lượng sản phẩm chocopie được bán ra vào tháng 5/2025?
+  - Vẽ bảng thống kê phương thức thanh toán và thời gian bán ra.
   ```
 
 ---
