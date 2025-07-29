@@ -86,7 +86,7 @@ streamlit run agent.py
 
 ---
 
-## 🧠 Các chức năng chính
+## 🧠 Key Features
 
 | Feature | Description |
 |----------|-------|
